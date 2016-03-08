@@ -1,0 +1,25 @@
+BFS com matriz de adjacência:
+
+visit(start node) 
+queue <- start node 
+WHILE queue is nor empty DO 
+  x <- queue 
+  FOR each y such that (x,y) is an edge 
+                  and y has not been visited yet DO 
+    visit(y) 
+    queue <- y 
+  END 
+END 
+
+********************************************************
+
+bfs(matrix, starting_node, action):
+  q <- new empty queue
+  v <- new array of booleans, initialized all false
+  enqueue(q, starting_node)
+  while queue_not_empty(q):
+    n <- dequeue(q)
+    action(n)
+    v[n] <- true
+    for n' in neighbors_of(n, matrix):
+      if not v[n']: enqueue(q, n')
