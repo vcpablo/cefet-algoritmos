@@ -88,7 +88,7 @@ int main(){
     imprimirMatriz(matriz);
 
     busca_em_largura(matriz, 4);
-    _print_path(4, 6);
+    _print_path(4, 7);
     return 0;
 }
 
