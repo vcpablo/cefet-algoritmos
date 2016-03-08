@@ -1,206 +1,97 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/**
+Dimensão da matriz.
+*/
+const MAX = 8;
+
+
+/**
+Cores que representam o estado do vértice: desconhecido, descoberto, finalizado.
+*/
 enum _cor {BRANCO, CINZA, PRETO};
 typedef enum _cor cor;
 
-struct _vertice{
-    char nome;
-    struct _vertice * prox_adj;
-    struct _vertice * prox_vertice;
-    int d;
-    struct _vertive * antecessor;
-    cor c;
-};
 
-typedef struct _vertice vertice;
-
+/**
+Item que da fila de vértices descobertos.
+*/
 struct _queue_item {
     struct _queue_item * prox;
-    vertice * item;
+    int item;
 };
-
 typedef struct _queue_item queue_item;
 
-void add_vertice(vertice** grafo, char elemento);
+void enqueue(queue_item ** queue, int elemento);
 
-int add_adjacencia(vertice* grafo, char origem, char elemento);
+int dequeue(queue_item ** queue);
 
-void enqueue(queue_item ** queue, vertice * elemento);
+void busca_em_largura(int matriz[MAX][MAX], int origem);
 
-vertice * dequeue(queue_item ** queue);
+void imprimirMatriz(int matriz[MAX][MAX]);
 
-vertice * get_vertice(vertice* grafo, char elemento);
+char toChar(int numero);
 
-void busca_em_largura(vertice *grafo, char origem);
+/*void print_path(vertice *grafo, char s, char v);
 
-void print_path(vertice *grafo, char s, char v);
-
-void _print_path(vertice * s, vertice * v);
+void _print_path(vertice * s, vertice * v);*/
 
 void imprimir_vertices_descobertos(queue_item* queue);
 
 int main(){
 
-    vertice * grafo = NULL;
 
-    add_vertice(&grafo, 'r');
-    add_vertice(&grafo, 's');
-    add_vertice(&grafo, 't');
-    add_vertice(&grafo, 'u');
-    add_vertice(&grafo, 'v');
-    add_vertice(&grafo, 'w');
-    add_vertice(&grafo, 'x');
-    add_vertice(&grafo, 'y');
+    int matriz[MAX][MAX];
+    int i, j;
 
-    add_adjacencia(grafo, 's', 'r');
-    add_adjacencia(grafo, 's', 'w');
-
-    add_adjacencia(grafo, 'r', 's');
-    add_adjacencia(grafo, 'r', 'v');
-
-    add_adjacencia(grafo, 't', 'w');
-    add_adjacencia(grafo, 't', 'x');
-    add_adjacencia(grafo, 't', 'u');
-
-    add_adjacencia(grafo, 'u', 't');
-    add_adjacencia(grafo, 'u', 'x');
-    add_adjacencia(grafo, 'u', 'y');
-
-    add_adjacencia(grafo, 'v', 'r');
-
-    add_adjacencia(grafo, 'w', 's');
-    add_adjacencia(grafo, 'w', 't');
-    add_adjacencia(grafo, 'w', 'x');
-
-    add_adjacencia(grafo, 'x', 'w');
-    add_adjacencia(grafo, 'x', 't');
-    add_adjacencia(grafo, 'x', 'u');
-    add_adjacencia(grafo, 'x', 'y');
-
-    add_adjacencia(grafo, 'y', 'x');
-    add_adjacencia(grafo, 'y', 'u');
-
-
-    busca_em_largura(grafo, 'v');
-    print_path(grafo,'v','y');
-    return 0;
-}
-/**
-*/
-void add_vertice(vertice** grafo, char elemento){
-
-    /*
-        "grafo" recebe o endereço de um ponteiro quando esta
-        função é chamada. Ou seja, recebe o endereço de um
-        espaço de memória que armazena o endereço de um vértice.
-
-        Portanto, "grafo" não é a mesma variável passada por parâmetro.
-        "grafo" é uma variável desta função.
-
-        Ele é um espaço de memória que armazena o endereço
-        de um outro espaço de memória que armazena o
-        endereço de um vértice.
-        Ou seja, "grafo" é um ponteiro que aponta para um
-        ponteiro que aponta para um vértice.
-    */
-
-    vertice *novo, *atual;
-    novo = malloc(sizeof(vertice));
-    novo->nome = elemento;
-    novo->prox_adj = NULL;
-    novo->prox_vertice = NULL;
-    novo->c = BRANCO;
-    novo->d = -1;
-    novo->antecessor = NULL;
-
-    if(*grafo == NULL){
-
-        /*
-            se "*grafo" for NULL, significa que ainda não há
-            nenhum "vértice origem" sendo apontado por "*grafo",
-            ou seja, o grafo está vazio.
-        */
-
-        //se o grafo estiver vazio, passa a apontar para o novo vértice
-        *grafo = novo;
-    }
-    else{
-
-        //pega o endereço do vértice que está sendo apontado por *grafo
-        atual = *grafo;
-
-        //pega o último vértice do grafo
-        while(atual->prox_vertice != NULL)
-            atual = atual->prox_vertice;
-
-        //adiciona o novo vértice
-        atual->prox_vertice = novo;
-    }
-
-    printf("criou vertice %c\n", elemento);
-}
-
-/**
-Retorna positivo caso encontre a origem no vetor de vértices.
-Caso contrário retorna negativo.
-*/
-int add_adjacencia(vertice* grafo, char origem, char elemento){
-
-    /*
-        "grafo" é o endereço do vértice inicial.
-        Ou seja, é um ponteiro que aponta para o
-        vértice inicial do grafo.
-    */
-
-    int i, encontrou = 0;
-    vertice * atual, * temp;
-
-    //atual recebe o vértice inicial
-    atual = grafo;
-
-    //se ainda não houver um vértice inicial, retorna negativo
-    if(atual == NULL)
-        return 0;
-
-    while(atual != NULL){
-
-        //se o vértice inicial for o vértice procurado
-        if (atual->nome == origem){
-
-            //encontrou o vértice no qual será dicionada a adjacência
-            encontrou = 1;
-
-            //percorre a lista de adjacência do vértice e pega a última adjacência da lista
-            while(atual->prox_adj != NULL)
-                atual = atual->prox_adj;
-
-            //cria uma nova adjacência
-            temp = malloc(sizeof(vertice));
-            temp->nome = elemento;
-            temp->prox_adj = NULL;
-            temp->prox_vertice = NULL;
-
-            //anexa na lista de adjacencia do vértice "origem"
-            atual->prox_adj = temp;
-
-            printf("criou adjacencia %c %c\n", origem, elemento);
-
-            break;
-        }else{
-
-            //se o vértice não for o "origem", passa para o próximo
-            atual = atual->prox_vertice;
+    for(i=0; i<MAX; i++){
+        for(j=0; j<MAX; j++){
+            matriz[i][j] = 0;
         }
     }
 
-    return encontrou;
+    matriz[0][1] = 1;
+    matriz[0][4] = 1;
+
+    matriz[1][0] = 1;
+    matriz[1][5] = 1;
+
+    matriz[2][5] = 1;
+    matriz[2][3] = 1;
+    matriz[2][6] = 1;
+
+    matriz[3][2] = 1;
+    matriz[3][6] = 1;
+    matriz[3][7] = 1;
+
+    matriz[4][0] = 1;
+
+    matriz[5][1] = 1;
+    matriz[5][2] = 1;
+    matriz[5][6] = 1;
+
+    matriz[6][5] = 1;
+    matriz[6][2] = 1;
+    matriz[6][3] = 1;
+    matriz[6][7] = 1;
+
+    matriz[7][6] = 1;
+    matriz[7][3] = 1;
+
+    imprimirMatriz(matriz);
+
+    busca_em_largura(matriz, 4);
+    //print_path(grafo,'v','y');
+    return 0;
 }
 
+
+
 /**
-Adiciona um elemento que contém um ponteiro para um vértice na fila.
+Adiciona um elemento que contém um inteiro na fila.
 */
-void enqueue(queue_item ** queue, vertice * elemento){
+void enqueue(queue_item ** queue, int elemento){
 
     //cria o elemento da fila
     queue_item * item = malloc(sizeof(queue_item));
@@ -215,6 +106,17 @@ void enqueue(queue_item ** queue, vertice * elemento){
     }else{
 
         //pega o primeiro item da fila
+        queue_item * verificador = *queue;
+
+        //verifica se já existe o valor "elemento" na fila
+        while(verificador != NULL)
+        {
+            //se existir, não adiciona nada na fila
+            if(verificador->item == elemento) return;
+            verificador = verificador->prox;
+        }
+
+        //pega o primeiro item da fila
         queue_item * atual = *queue;
 
         //percorre a fila até chegar ao último item
@@ -225,16 +127,21 @@ void enqueue(queue_item ** queue, vertice * elemento){
         atual->prox = item;
     }
 
-    printf("inseriu %c na fila\n", elemento->nome);
+    printf("\n\ninseriu %c na fila\n", toChar(elemento));
 
     imprimir_vertices_descobertos(*queue);
 }
 
+
+
+/**
+Imprime a lista de vértices descobertos.
+*/
 void imprimir_vertices_descobertos(queue_item* queue){
     printf("lista de vertices descobertos: (");
 
     while(queue != NULL){
-        printf("%c", queue->item->nome);
+        printf("%c", toChar(queue->item));
         queue = queue->prox;
 
         if(queue != NULL) printf(", ");
@@ -243,15 +150,20 @@ void imprimir_vertices_descobertos(queue_item* queue){
     printf(")\n");
 }
 
-vertice * dequeue(queue_item ** queue){
 
-    //se a "queue" ainda não aponta para nenhum item
+
+/**
+Remove o primeiro elemento da fila de vértices descobertos.
+*/
+int dequeue(queue_item ** queue){
+
+    //se a "queue" ainda nao aponta para nenhum item
     if(*queue == NULL){
         return NULL;
     }else{
 
-        //pega o vértice do primeiro item da fila
-        vertice * atual = (*queue)->item;
+        //pega õ int do primeiro item da fila
+        int atual = (*queue)->item;
 
         //pega o primeiro item da fila
         queue_item * atual_q = *queue;
@@ -259,46 +171,46 @@ vertice * dequeue(queue_item ** queue){
         //a cabeça da fila passa a ser o segundo item
         *queue = (*queue)->prox;
 
-        printf("removeu %c da fila\n", atual_q->item->nome);
+        printf("removeu %c da fila\n", toChar(atual_q->item));
 
         //elimina o primeiro item da fila
         free(atual_q);
 
-        //retorna o vértice do item eliminado
+        //retorna o int do item eliminado
         return atual;
     }
 }
 
-vertice * get_vertice(vertice* grafo, char elemento){
-    vertice * atual = grafo;
-    while(atual != NULL){
-        if(atual->nome == elemento)
-            return atual;
-        else
-            atual = atual->prox_vertice;
-    }
-    return NULL;
-}
+
 
 /**
-Executa a busca em largura a partir de um vértice origem.
+Executa a busca em largura a partir de um valor origem.
 */
-void busca_em_largura(vertice *grafo, char origem){
+void busca_em_largura(int matriz[MAX][MAX], int s){
 
-    //pega o vértice que será a origem da busca
-    vertice * s = get_vertice(grafo, origem);
+    printf("iniciando busca a partir de %c\n", toChar(s));
 
-    printf("iniciando busca a partir de %c\n", s->nome);
+    //cria listas de MAX elementos para armazenar valores sobre os nós
+    //ex: cor[3] armazena a cor do vértice com valor = 3
+    int* cor = (int*)malloc(sizeof(int)*MAX);
+    int* d = (int*)malloc(sizeof(int)*MAX);
+    int* pi = (int*)malloc(sizeof(int)*MAX);
+    int* aux = (int*)malloc(sizeof(int)*MAX);
 
-    //se o vértice não for encontrado, retorna NULL
-    if (s == NULL)
-        return;
+    //cria variáveis para iteração
+    int i, j;
 
-    //sinaliza o vértice como "descoberto"
-    s->c = CINZA;
+    //atribui valores default para cada vértice
+    for(i=0; i<MAX; i++){
+        cor[i] = BRANCO;
+        d[i] = 0;
+        pi[i] = -1;
+    }
 
-    //atribui distância 0 ao vértice
-    s->d = 0;
+    //atribui os valores do vértice de origem
+    cor[s] = CINZA;
+    d[s] = 0;
+    pi[s] = -1;
 
     //Cria a fila de vértices "descobertos"
     queue_item * q = NULL;
@@ -310,54 +222,88 @@ void busca_em_largura(vertice *grafo, char origem){
     while(q != NULL){
 
         //pega o primeiro vértice da fila = "u"
-        vertice * u = dequeue(&q);
+        int u = dequeue(&q);
 
-        //cria um ponteiro que percorrerá os vértices adjacentes a "u" e faz com que ele aponte para a primeira adjacência
-        vertice * atual = u->prox_adj;
+        for(i=0; i<MAX; i++){
 
-        //enquanto o ponteiro "atual" apontar para algum vértice, ou seja, percorre todas as adjacências do vértice "u"
-        while(atual != NULL){
+            //pega o valor na matriz de adjacência
+            int v = matriz[u][i];
 
-            //pega o vértice adjacente
-            vertice * v = get_vertice(grafo, atual->nome);
+            //se o valor for 1, significa que o vértice "i" é adjacente de "u"
+            if(v){
 
-            //se o vértice estiver sinalizado como "não descoberto"
-            if(v->c == BRANCO){
+                //se o vértice "i" ainda não foi descoberto
+                if(cor[i] == BRANCO){
 
-                //sinaliza o vértice como "descoberto"
-                v->c = CINZA;
+                    //diz que o vértice "i" foi descoberto
+                    cor[i] == CINZA;
 
-                //calcula a distância em relação à origem baseado na distância do vértice "u"
-                v->d = u->d + 1;
+                    //calcula a distância de "i" em relação a origem
+                    d[i] = d[u] + 1;
 
-                //diz quem é o vértice antecessor
-                v->antecessor = u;
+                    //diz quem é o antecessor de "i"
+                    pi[i] = u;
 
-                //adiciona o vértice na fila de "descobertos"
-                enqueue(&q, v);
+                    //coloca o vértice "i" na fila de vértices descobertos
+                    enqueue(&q, i);
 
-                printf("distancia de %c ate %c = %d\n", origem, v->nome, v->d);
+                    printf("distancia de %c ate %c = %d\n", toChar(s), toChar(i), d[i]);
+                }
             }
-
-            //se o vértice estiver sinalizado como "descoberto" ou "finalizado", passa para a próxima adjacência
-            atual = atual->prox_adj;
         }
 
-        //sinaliza o vértice como "finalizado"
-        u->c = PRETO;
+        //diz que o vértice "u" foi finalizado
+        cor[u] = PRETO;
     }
-
 }
 
-/**
-Imprime o melhor caminho de um vértice origem a um vértice destino.
-*/
-void print_path(vertice *grafo, char origem, char destino){
 
-    //pega o vértice origem
+
+/**
+Imprime a matriz.
+*/
+void imprimirMatriz(int matriz[MAX][MAX]){
+
+    int i,j;
+
+    for(i=0; i<MAX; i++)
+    {
+        for(j=0; j<MAX; j++)
+        {
+            printf("%d ", matriz[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+
+
+/**
+Converte um valor inteiro do vértice em seu valor correspondente utilizado na
+implementação do BFS com lista de adjacências em "lista_adjacencia.c".
+*/
+char toChar(int numero){
+
+    switch(numero){
+        case 0: return 'r';
+        case 1: return 's';
+        case 2: return 't';
+        case 3: return 'u';
+        case 4: return 'v';
+        case 5: return 'w';
+        case 6: return 'x';
+        case 7: return 'y';
+    }
+}
+/**
+Imprime o melhor caminho de um v�rtice origem a um v�rtice destino.
+*/
+/*void print_path(vertice *grafo, char origem, char destino){
+
+    //pega o v�rtice origem
     vertice * s_vertice = get_vertice(grafo, origem);
 
-    //pega o vértice destino
+    //pega o v�rtice destino
     vertice * v_vertice = get_vertice(grafo, destino);
 
     //imprime o melhor caminho
@@ -366,23 +312,23 @@ void print_path(vertice *grafo, char origem, char destino){
 
 void _print_path(vertice * origem, vertice * destino){
 
-    //se o vértice origem for o mesmo que o destino
+    //se o v�rtice origem for o mesmo que o destino
     if (origem == destino){
 
-        //imprime o nome do vértice origem
+        //imprime o nome do v�rtice origem
         printf("%c - ", origem->nome);
 
-    //se o vértice destino não tiver antecessores
+    //se o v�rtice destino n�o tiver antecessores
     }else if (destino->antecessor == NULL){
 
-        //diz que não há caminho entre o vértice origem e o destino
+        //diz que n�o h� caminho entre o v�rtice origem e o destino
         printf("Nao ha caminho entre %c %c\n", origem->nome, destino->nome);
 
     }else{
 
-        //imprime o melhor caminho entre o vértice origem e o vértice antecessor ao vértice destino
+        //imprime o melhor caminho entre o v�rtice origem e o v�rtice antecessor ao v�rtice destino
         _print_path(origem, destino->antecessor);
 
         printf("%c - ", destino->nome);
     }
-}
+}*/

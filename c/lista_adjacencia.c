@@ -1,9 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/**
+Cores que representam o estado do vértice: desconhecido, descoberto, finalizado.
+*/
 enum _cor {BRANCO, CINZA, PRETO};
 typedef enum _cor cor;
 
+
+/**
+Estrutura do vértice.
+*/
 struct _vertice{
     char nome;
     struct _vertice * prox_adj;
@@ -12,14 +19,16 @@ struct _vertice{
     struct _vertive * antecessor;
     cor c;
 };
-
 typedef struct _vertice vertice;
 
+
+/**
+Item que da fila de vértices descobertos.
+*/
 struct _queue_item {
     struct _queue_item * prox;
     vertice * item;
 };
-
 typedef struct _queue_item queue_item;
 
 void add_vertice(vertice** grafo, char elemento);
@@ -86,7 +95,11 @@ int main(){
     print_path(grafo,'v','y');
     return 0;
 }
+
+
+
 /**
+Adiciona um vértice no grafo.
 */
 void add_vertice(vertice** grafo, char elemento){
 
@@ -140,6 +153,8 @@ void add_vertice(vertice** grafo, char elemento){
 
     printf("criou vertice %c\n", elemento);
 }
+
+
 
 /**
 Retorna positivo caso encontre a origem no vetor de vértices.
@@ -197,6 +212,8 @@ int add_adjacencia(vertice* grafo, char origem, char elemento){
     return encontrou;
 }
 
+
+
 /**
 Adiciona um elemento que contém um ponteiro para um vértice na fila.
 */
@@ -225,11 +242,16 @@ void enqueue(queue_item ** queue, vertice * elemento){
         atual->prox = item;
     }
 
-    printf("inseriu %c na fila\n", elemento->nome);
+    printf("\n\ninseriu %c na fila\n", elemento->nome);
 
     imprimir_vertices_descobertos(*queue);
 }
 
+
+
+/**
+Imprime a lista de vértices descobertos.
+*/
 void imprimir_vertices_descobertos(queue_item* queue){
     printf("lista de vertices descobertos: (");
 
@@ -243,6 +265,11 @@ void imprimir_vertices_descobertos(queue_item* queue){
     printf(")\n");
 }
 
+
+
+/**
+Remove o primeiro elemento da fila de vértices descobertos.
+*/
 vertice * dequeue(queue_item ** queue){
 
     //se a "queue" ainda não aponta para nenhum item
@@ -269,6 +296,11 @@ vertice * dequeue(queue_item ** queue){
     }
 }
 
+
+
+/**
+Pega um vértice pelo nome.
+*/
 vertice * get_vertice(vertice* grafo, char elemento){
     vertice * atual = grafo;
     while(atual != NULL){
@@ -279,6 +311,8 @@ vertice * get_vertice(vertice* grafo, char elemento){
     }
     return NULL;
 }
+
+
 
 /**
 Executa a busca em largura a partir de um vértice origem.
@@ -349,6 +383,8 @@ void busca_em_largura(vertice *grafo, char origem){
 
 }
 
+
+
 /**
 Imprime o melhor caminho de um vértice origem a um vértice destino.
 */
@@ -363,6 +399,9 @@ void print_path(vertice *grafo, char origem, char destino){
     //imprime o melhor caminho
     _print_path(s_vertice, v_vertice);
 }
+
+
+
 
 void _print_path(vertice * origem, vertice * destino){
 
@@ -386,6 +425,3 @@ void _print_path(vertice * origem, vertice * destino){
         printf("%c - ", destino->nome);
     }
 }
-
-
-
