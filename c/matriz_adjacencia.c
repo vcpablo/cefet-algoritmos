@@ -10,8 +10,8 @@ const MAX = 8;
 /**
 Cores que representam o estado do vértice: desconhecido, descoberto, finalizado.
 */
-enum _cor {BRANCO, CINZA, PRETO};
-typedef enum _cor cor;
+enum _cores {BRANCO, CINZA, PRETO};
+typedef enum _cores cores;
 
 
 /**
@@ -23,6 +23,12 @@ struct _queue_item {
 };
 typedef struct _queue_item queue_item;
 
+
+int *cor, *d, *pi, *aux;
+
+
+
+
 void enqueue(queue_item ** queue, int elemento);
 
 int dequeue(queue_item ** queue);
@@ -33,11 +39,11 @@ void imprimirMatriz(int matriz[MAX][MAX]);
 
 char toChar(int numero);
 
-/*void print_path(vertice *grafo, char s, char v);
-
-void _print_path(vertice * s, vertice * v);*/
+void _print_path(int s, int v);
 
 void imprimir_vertices_descobertos(queue_item* queue);
+
+
 
 int main(){
 
@@ -82,7 +88,7 @@ int main(){
     imprimirMatriz(matriz);
 
     busca_em_largura(matriz, 4);
-    //print_path(grafo,'v','y');
+    _print_path(4, 6);
     return 0;
 }
 
@@ -127,7 +133,7 @@ void enqueue(queue_item ** queue, int elemento){
         atual->prox = item;
     }
 
-    printf("\n\ninseriu %c na fila\n", toChar(elemento));
+    printf("vertice %c encontrado\n", toChar(elemento));
 
     imprimir_vertices_descobertos(*queue);
 }
@@ -162,7 +168,7 @@ int dequeue(queue_item ** queue){
         return NULL;
     }else{
 
-        //pega õ int do primeiro item da fila
+        //pega o int do primeiro item da fila
         int atual = (*queue)->item;
 
         //pega o primeiro item da fila
@@ -188,14 +194,14 @@ Executa a busca em largura a partir de um valor origem.
 */
 void busca_em_largura(int matriz[MAX][MAX], int s){
 
-    printf("iniciando busca a partir de %c\n", toChar(s));
+    printf("\n** iniciando busca a partir de %c **\n\n", toChar(s));
 
     //cria listas de MAX elementos para armazenar valores sobre os nós
     //ex: cor[3] armazena a cor do vértice com valor = 3
-    int* cor = (int*)malloc(sizeof(int)*MAX);
-    int* d = (int*)malloc(sizeof(int)*MAX);
-    int* pi = (int*)malloc(sizeof(int)*MAX);
-    int* aux = (int*)malloc(sizeof(int)*MAX);
+    cor = (int*)malloc(sizeof(int)*MAX);
+    d = (int*)malloc(sizeof(int)*MAX);
+    pi = (int*)malloc(sizeof(int)*MAX);
+    aux = (int*)malloc(sizeof(int)*MAX);
 
     //cria variáveis para iteração
     int i, j;
@@ -224,6 +230,8 @@ void busca_em_largura(int matriz[MAX][MAX], int s){
         //pega o primeiro vértice da fila = "u"
         int u = dequeue(&q);
 
+        printf("analisando vertices de %c...\n", toChar(u));
+
         for(i=0; i<MAX; i++){
 
             //pega o valor na matriz de adjacência
@@ -236,7 +244,7 @@ void busca_em_largura(int matriz[MAX][MAX], int s){
                 if(cor[i] == BRANCO){
 
                     //diz que o vértice "i" foi descoberto
-                    cor[i] == CINZA;
+                    cor[i] = CINZA;
 
                     //calcula a distância de "i" em relação a origem
                     d[i] = d[u] + 1;
@@ -254,6 +262,8 @@ void busca_em_largura(int matriz[MAX][MAX], int s){
 
         //diz que o vértice "u" foi finalizado
         cor[u] = PRETO;
+
+        printf("%c concluido\n\n", toChar(u));
     }
 }
 
@@ -266,8 +276,19 @@ void imprimirMatriz(int matriz[MAX][MAX]){
 
     int i,j;
 
+    //nomes das colunas
+    printf("   ");
+    for(i=0; i<MAX; i++){
+        printf("%c ", toChar(i));
+    }
+
+    printf("\n\n");
+
     for(i=0; i<MAX; i++)
     {
+        //nome das linhas
+        printf("%c  ", toChar(i));
+
         for(j=0; j<MAX; j++)
         {
             printf("%d ", matriz[i][j]);
@@ -295,40 +316,31 @@ char toChar(int numero){
         case 7: return 'y';
     }
 }
+
+
+
 /**
-Imprime o melhor caminho de um v�rtice origem a um v�rtice destino.
+Imprime o melhor caminho de um vértice origem a um vértice destino.
 */
-/*void print_path(vertice *grafo, char origem, char destino){
+void _print_path(int origem, int destino){
 
-    //pega o v�rtice origem
-    vertice * s_vertice = get_vertice(grafo, origem);
-
-    //pega o v�rtice destino
-    vertice * v_vertice = get_vertice(grafo, destino);
-
-    //imprime o melhor caminho
-    _print_path(s_vertice, v_vertice);
-}
-
-void _print_path(vertice * origem, vertice * destino){
-
-    //se o v�rtice origem for o mesmo que o destino
+    //se o vértice origem for o mesmo que o destino
     if (origem == destino){
 
-        //imprime o nome do v�rtice origem
-        printf("%c - ", origem->nome);
+        //imprime o nome do vértice origem
+        printf("%c - ", toChar(origem));
 
-    //se o v�rtice destino n�o tiver antecessores
-    }else if (destino->antecessor == NULL){
+    //se o vértice destino não tiver antecessores
+    }else if (pi[destino] == -1){
 
-        //diz que n�o h� caminho entre o v�rtice origem e o destino
-        printf("Nao ha caminho entre %c %c\n", origem->nome, destino->nome);
+        //diz que não há caminho entre o vértice origem e o destino
+        printf("Nao ha caminho entre %c %c\n", toChar(origem), toChar(destino));
 
     }else{
 
-        //imprime o melhor caminho entre o v�rtice origem e o v�rtice antecessor ao v�rtice destino
-        _print_path(origem, destino->antecessor);
+        //imprime o melhor caminho entre o vértice origem e o vértice antecessor ao vértice destino
+        _print_path(origem, pi[destino]);
 
-        printf("%c - ", destino->nome);
+        printf("%c - ", toChar(destino));
     }
-}*/
+}

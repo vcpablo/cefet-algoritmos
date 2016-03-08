@@ -242,7 +242,7 @@ void enqueue(queue_item ** queue, vertice * elemento){
         atual->prox = item;
     }
 
-    printf("\n\ninseriu %c na fila\n", elemento->nome);
+    printf("vertice %c encontrado\n", elemento->nome);
 
     imprimir_vertices_descobertos(*queue);
 }
@@ -322,7 +322,7 @@ void busca_em_largura(vertice *grafo, char origem){
     //pega o vértice que será a origem da busca
     vertice * s = get_vertice(grafo, origem);
 
-    printf("iniciando busca a partir de %c\n", s->nome);
+    printf("\n** iniciando busca a partir de %c **\n\n", s->nome);
 
     //se o vértice não for encontrado, retorna NULL
     if (s == NULL)
@@ -345,6 +345,8 @@ void busca_em_largura(vertice *grafo, char origem){
 
         //pega o primeiro vértice da fila = "u"
         vertice * u = dequeue(&q);
+
+        printf("analisando vertices de %c...\n", u->nome);
 
         //cria um ponteiro que percorrerá os vértices adjacentes a "u" e faz com que ele aponte para a primeira adjacência
         vertice * atual = u->prox_adj;
@@ -379,6 +381,8 @@ void busca_em_largura(vertice *grafo, char origem){
 
         //sinaliza o vértice como "finalizado"
         u->c = PRETO;
+
+        printf("%c concluido\n\n", u->nome);
     }
 
 }
