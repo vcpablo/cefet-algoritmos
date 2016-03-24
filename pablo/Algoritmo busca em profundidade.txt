@@ -1,0 +1,158 @@
+Exercicio 22.3 Cormen
+1. Criar a estrutura do grafo
+
+[q, r, s, t, u, v, w, x, y, z]
+
+2. Cria a lista de adjacências de cada vértice (arestas)
+[q, s]
+[q, t]
+[q, w]
+
+[r, u]
+[r, y]
+
+[s,v]
+
+[t, y]
+[t, x]
+[u, y]
+
+[v, w]
+[w, s]
+
+[x, z]
+
+[y, q]
+[z, x]
+
+
+3. Iniciar Busca em Profundidade a partir de q
+
+Time = 0;
+
+- q está BRANCO
+- Pinta q de CINZA
+- Time = 1
+- q->d = 1;
+
+
+- Analisa s [q, s], s está BRANCO.
+- Pinta s de CINZA
+- Time = 2
+- s->d = 2
+
+- Analisa v [s, v], v está BRANCO
+- Pinta v de CINZA
+- Time = 3
+- v->d = 3
+
+- Analisa w [v, w], w está BRANCO
+- Pinta w de CINZA.
+- Time = 4
+- w->d = 4
+
+- Analisa s [w, s], S está cinza
+- w não possui mais adjacências. Pinta w de PRETO.
+- Time 5
+- w->f = 5
+
+- Analisa v, v está CINZA.
+- v não possui mais adjaências. Pinta v de PRETO;
+- Time = 6
+- v->f = 6
+
+- Analisa s, s está CINZA.
+- s não possui mais adjacências. Pinta s de PRETO;
+- Time = 7
+- s->f = 7
+
+- Analisa q, q está cinza.
+- q ainda possui adjacencias.  (w está PRETO)
+- Time = 8
+- Analisa t [q,t], t está BRANCO
+- Pinta t de CINZA
+- t->d = 8
+
+- Analisa x [t, x], x está BRANCO
+- Pinta x de CINZA
+- Time = 9
+- x->d = 9
+
+- Analiza z [x, z], z está BRANCO
+- Pinta z de CINZA
+- Time = 10
+- z->d = 10
+
+- Analisa x [z, x], x está CINZA.
+- TIme = 11
+- z não possui mais adjacencias.
+- Pinta z de PRETO
+- z->f = 11
+
+- Analisa x, x está CINZA.
+- x não possui mais adjacencias.
+- Time = 12;
+- Pinta x de PRETO
+- x->f = 12
+
+
+- Analisa t, t está cinza
+- Time = 13
+- t possui adjacencias
+- analisa y [t, y]
+- y está BRANCO
+- pinta y de CINZA
+- y->d = 13
+
+- Analisa q, q está cinza
+- Time = 14
+- y não possui mais adjacencias
+- pinta y de PRETO
+- y->f = 14
+
+- analisa t, [q, t]
+- Time = 15
+- t está cinza
+- t não possui mais adjacencias brancas
+- t->f = 15
+
+- analisa q (volta)[
+- TIme = 16
+- Q não possui adjacencias brancas
+- pintz q de preto
+- q->f = 16
+
+- reinicia a busca por R
+- TIme = 17
+- r->d = 17
+- analisa y, [r, y] (está preto)
+
+- analisa u, [r, u]
+- Time = 18
+- u está branco
+- pinta u de CINZA
+- u->d = 18
+
+- u não tem mais adjacencias
+- Time = 19
+- pinta u de PRETO
+- u->f = 19
+
+- analisa r (volta)
+- Time = 20
+- r não tem mais adjacencias
+- pinta r de PRETO
+- r->f = 20
+
+
+
+
+
+
+
+
+ 
+
+
+
+

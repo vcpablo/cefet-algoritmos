@@ -1,0 +1,16 @@
+Escolhe uma origem para iniciar a busca
+
+Ao encontrar um vertice, verifica se ele está branco. Caso estejam pinta ele de CINZA, coloca em uma pilha e verifica as adjacencias. Caso contrário analisa o próximo vértice do grafo;
+Caso tenha adjacência, pinta ela de cINZA, coloca na pilha, e verifica se tem outas adjacências e assim por diante.
+
+Até quando não houver nenhuma aresta. Quando isso acontecer, pinta o vértice de PRETO e tira ele da pilha.
+E volta para o proximo elemento da pilha.
+
+O objetivo do algoritmo é pintar todos os vértices de preto e a pilha ficar vazia.
+Isso acontece quando ele não possui mais arestas a serem descobertas.
+
+Para cada iteração incrementa uma variável de tempo para saber qual o tempo de entrada e o tempo de saída de cada vértice.
+Nesse algoritmo utiliza-se uma variável para guardar o antecessor do vértice atual, para saber de onde viemos na iteração.
+
+A diferença para a busca em largura é que nesta analisa-se todas as adjacências do vértice
+
