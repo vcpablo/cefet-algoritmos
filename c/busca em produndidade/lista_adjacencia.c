@@ -23,6 +23,14 @@ struct _vertice{
 typedef struct _vertice vertice;
 
 
+struct _topological_item{
+    struct _topological_item * anterior;
+    vertice * item;
+};
+typedef struct _topological_item topological_item;
+
+void enqueue(vertice * elemento);
+
 void add_vertice(vertice** grafo, char elemento);
 
 int add_adjacencia(vertice* grafo, char origem, char elemento);
@@ -33,29 +41,64 @@ void busca_em_profundidade(vertice *grafo);
 
 void visit(vertice *grafo, vertice *u, int *time);
 
+void print_topological_queue();
+
+topological_item * queue = NULL;
+
 int main(){
 
     vertice * grafo = NULL;
 
+    add_vertice(&grafo, 'm');
+    add_vertice(&grafo, 'n');
+    add_vertice(&grafo, 'o');
+    add_vertice(&grafo, 'p');
+    add_vertice(&grafo, 'q');
+    add_vertice(&grafo, 'r');
+    add_vertice(&grafo, 's');
+    add_vertice(&grafo, 't');
     add_vertice(&grafo, 'u');
     add_vertice(&grafo, 'v');
+    add_vertice(&grafo, 'w');
     add_vertice(&grafo, 'x');
     add_vertice(&grafo, 'y');
-    add_vertice(&grafo, 'w');
     add_vertice(&grafo, 'z');
 
-    add_adjacencia(grafo, 'u', 'v');
-    add_adjacencia(grafo, 'v', 'y');
-    add_adjacencia(grafo, 'y', 'x');
-    add_adjacencia(grafo, 'x', 'v');
-    add_adjacencia(grafo, 'u', 'x');
-    add_adjacencia(grafo, 'w', 'y');
+    add_adjacencia(grafo, 'm', 'q');
+    add_adjacencia(grafo, 'm', 'r');
+    add_adjacencia(grafo, 'm', 'x');
+
+    add_adjacencia(grafo, 'n', 'o');
+    add_adjacencia(grafo, 'n', 'q');
+    add_adjacencia(grafo, 'n', 'u');
+
+    add_adjacencia(grafo, 'o', 'r');
+    add_adjacencia(grafo, 'o', 's');
+    add_adjacencia(grafo, 'o', 'v');
+
+    add_adjacencia(grafo, 'p', 'o');
+    add_adjacencia(grafo, 'p', 's');
+    add_adjacencia(grafo, 'p', 'z');
+
+    add_adjacencia(grafo, 'q', 't');
+
+    add_adjacencia(grafo, 'r', 'u');
+    add_adjacencia(grafo, 'r', 'y');
+
+    add_adjacencia(grafo, 's', 'r');
+
+    add_adjacencia(grafo, 'u', 't');
+
+    add_adjacencia(grafo, 'v', 'w');
+    add_adjacencia(grafo, 'v', 'x');
+
     add_adjacencia(grafo, 'w', 'z');
-    add_adjacencia(grafo, 'z', 'z');
+
+    add_adjacencia(grafo, 'y', 'v');
 
 
     busca_em_profundidade(grafo);
-    //print_path(grafo,'v','y');
+    print_topological_queue();
     return 0;
 }
 
@@ -225,6 +268,7 @@ void busca_em_profundidade(vertice *grafo){
 
 
 
+
 void visit(vertice *grafo, vertice *u, int *time){
 
     //incrementa o time
@@ -271,54 +315,61 @@ void visit(vertice *grafo, vertice *u, int *time){
     //sinaliza o vértice como "finalizado"
     u->c = PRETO;
 
+    enqueue(u);
+
     //incrementa o time
     *time = *time + 1;
 
     //atribui o time final do vértice
     u->f = *time;
-    
+
     printf("vertice %c: (%d, %d)\n", u->nome, u->d, u->f);
 }
 
 
 
+
 /**
-Imprime o melhor caminho de um vértice origem a um vértice destino.
+Adiciona um elemento na pilha topológica.
 */
-void print_path(vertice *grafo, char origem, char destino){
+void enqueue(vertice * elemento){
 
-    //pega o vértice origem
-    vertice * s_vertice = get_vertice(grafo, origem);
+    //cria um novo elemento
+    topological_item *novo = malloc(sizeof(topological_item));
+    novo->item = elemento;
+    novo->anterior = NULL;
 
-    //pega o vértice destino
-    vertice * v_vertice = get_vertice(grafo, destino);
+    //se a pilha topológica estiver vazia
+    if(queue == NULL){
 
-    //imprime o melhor caminho
-    _print_path(s_vertice, v_vertice);
+        //adiciona o primeiro elemento da pilha
+        queue = novo;
+    }else{
+
+        //diz que o elemento anterior ao novo elemento é a cabeça da pilha
+        novo->anterior = queue;
+
+        //a cabeça da pilha passa a ser o novo elemento
+        queue = novo;
+    }
 }
 
 
 
 
-void _print_path(vertice * origem, vertice * destino){
+/**
+Imprime a pilha topológica.
+*/
+void print_topological_queue(){
+    topological_item *atual = queue;
 
-    //se o vértice origem for o mesmo que o destino
-    if (origem == destino){
+    printf("\nLista topologica:\n");
 
-        //imprime o nome do vértice origem
-        printf("%c - ", origem->nome);
-
-    //se o vértice destino não tiver antecessores
-    }else if (destino->antecessor == NULL){
-
-        //diz que não há caminho entre o vértice origem e o destino
-        printf("Nao ha caminho entre %c %c\n", origem->nome, destino->nome);
-
-    }else{
-
-        //imprime o melhor caminho entre o vértice origem e o vértice antecessor ao vértice destino
-        _print_path(origem, destino->antecessor);
-
-        printf("%c - ", destino->nome);
+    while(atual->anterior != NULL)
+    {
+        printf("%c - ", atual->item->nome);
+        atual = atual->anterior;
     }
+
+    printf("%c", atual->item->nome);
 }
