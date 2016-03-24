@@ -1,0 +1,72 @@
+- Monta a estrutura do grafo
+- Inclui as adjacências (arestas)
+- Realiza a primeira busca em profundidade
+  - Ao pintar vértice de PRETO (saída do vértice) inclui ele em uma file/pilha
+
+- Monta a transposta do grafo
+
+- Realiza a segunda busca em profundidade a partir do vertice com valor de saida mais alto
+Quando uma árvore for encontrada, significa que os componentes são fortemente conectados.
+Quando isso acontece, a busca é reinicializada a partir do componente com maior tempo de saída dentre os disponíveis.
+
+
+
+-----------------------------------------
+
+P 28
+N 26
+O 25
+S 24
+
+M 20
+R 19
+Y 18
+V 17
+
+X 16
+W 14
+Z 13
+U 8 
+
+Q 5 
+T 4 
+
+ -----------------------------------------
+|              Exercícios                |           
+ -----------------------------------------
+I. Execute a busca e largura no grafo dado mostrando a distância para a origem S.
+
+1. Montando estrutura do grafo...
+
+s - a - b - c - d - e - f - g - h - i
+
+2. Montando a lista de adjacências
+
+[s,a]
+[s,b]
+
+[a,b]
+[a,d]
+[a,g]
+[a,h]
+
+[b,c]
+[b,f]
+
+[d,e]
+
+[e,i]
+
+[f,e]
+
+[h,d]
+
+[i,d]
+
+
+-----------
+
+Árvore primeira em profundidade é um grafo formado pelas arestas usadas para descobrir os nós
+
+
+
